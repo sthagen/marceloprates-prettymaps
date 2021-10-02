@@ -1,3 +1,27 @@
+'''
+MIT License
+
+Copyright (c) 2021 Marcelo de Oliveira Rosa Prates
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+'''
+
 import re
 from collections.abc import Iterable
 
@@ -10,40 +34,8 @@ from shapely.geometry import box, Polygon, MultiLineString, GeometryCollection
 from shapely.affinity import translate, scale, rotate
 from descartes import PolygonPatch
 from tabulate import tabulate
-from IPython.display import Markdown, display
 
 from .fetch import get_perimeter, get_layer
-
-
-# Helper functions
-def get_hash(key):
-    return frozenset(key.items()) if type(key) == dict else key
-
-
-# Drawing functions
-def show_palette(palette, description=""):
-    """
-    Helper to display palette in Markdown
-    """
-
-    colorboxes = [
-        f"![](https://placehold.it/30x30/{c[1:]}/{c[1:]}?text=)" for c in palette
-    ]
-
-    display(Markdown((description)))
-    display(Markdown(tabulate(pd.DataFrame(colorboxes), showindex=False)))
-
-
-def get_patch(shape, **kwargs):
-    """
-    Convert shapely object to matplotlib patch
-    """
-    # if type(shape) == Path:
-    #    return patches.PathPatch(shape, **kwargs)
-    if type(shape) == Polygon and shape.area > 0:
-        return PolygonPatch(list(zip(*shape.exterior.xy)), **kwargs)
-    else:
-        return None
 
 
 # Plot a single shape
@@ -125,7 +117,12 @@ def transform(layers, x, y, scale_x, scale_y, rotation):
 
 
 def draw_text(ax, text, x, y, **kwargs):
-    ax.text(x, y, text, **kwargs)
+    if 'bbox' in kwargs:
+        bbox_kwargs = kwargs.pop('bbox')
+        text = ax.text(x, y, text, **kwargs)
+        text.set_bbox(**bbox_kwargs)
+    else:
+        text = ax.text(x, y, text, **kwargs)
 
 
 # Plot
@@ -263,7 +260,7 @@ def plot(
 
     # Plot background
     if "background" in drawing_kwargs:
-        geom = scale(box(*layers["perimeter"].bounds), 2, 2)
+        geom = scale(box(*layers["perimeter"].bounds), 1.2, 1.2)
 
         if vsketch is None:
             ax.add_patch(PolygonPatch(geom, **drawing_kwargs["background"]))
