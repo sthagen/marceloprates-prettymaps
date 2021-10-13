@@ -1,25 +1,32 @@
 # prettymaps
 
-A minimal Python library to draw customized maps from OpenStreetMap data.
+A minimal Python library to draw customized maps from [OpenStreetMap](https://www.openstreetmap.org/#map=12/11.0733/106.3078) created using the [osmnx](https://github.com/gboeing/osmnx), [matplotlib](https://matplotlib.org/), [shapely](https://shapely.readthedocs.io/en/stable/index.html) and [vsketch](https://github.com/abey79/vsketch) libraries.
 
-Based on [osmnx](https://github.com/gboeing/osmnx), [matplotlib](https://matplotlib.org/), [shapely](https://shapely.readthedocs.io/en/stable/index.html) and [vsketch](https://github.com/abey79/vsketch) libraries.
+[![CC BY NC 4.0][cc-by-nc-shield]][cc-by-nc]
 
-## Important:
+This work is [licensed](LICENSE) under a
+[Creative Commons Attribution-NonCommercial 4.0 International][cc-by-nc].
+
+[![CC BY 4.0][cc-by-image]][cc-by-nc]
+
+[cc-by-nc]: http://creativecommons.org/licenses/by-nc/4.0/
+[cc-by-image]: https://i.creativecommons.org/l/by-nc/4.0/88x31.png
+[cc-by-nc-shield]: https://img.shields.io/badge/license-CC%20BY%20NC%204.0-lightgrey.svg
+
+- **Because of the recent episodes of plagiarism and refusal to credit this project in the NFT Community (Twitter profiles [AeternaCivitas](https://twitter.com/AeternaCivitas) and [geoartnft](twitter.com/geoartnft)) I have decided to change my license to Creative Commons (CC-BY-NC-4.0) which requires you to credit it everytime you use it and forbids you to use if for commercial purposes.**
+- **The printed message on the figures crediting OpenStreetMap and my repository, included by default, is mandatory.**
+- **I do not authorize people to sell NFTs using prettymaps and ask that you contact me if you know of someone who is doing it.**
+- **CREDIT OPEN SOURCE DEVELOPERS!**
 
 <a href='https://ko-fi.com/marceloprates_' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
-
-- I've made the `plot` function print by default a message in the corner containing the [mandatory OpenStreetMap credit](https://www.openstreetmap.org/copyright) and the link to this repository. Please keep it.
-- You can make commercial use of `prettymaps` drawings, but I ask that you credit OpenStreetMaps and myself.
-- Share your creations on the [prettymaps subreddit](https://www.reddit.com/r/prettymaps_/)
 
 ## As seen on [Hacker News](https://web.archive.org/web/20210825160918/https://news.ycombinator.com/news):
 ![](prints/hackernews-prettymaps.png)
 
 ## Read the [docs](https://prettymaps.readthedocs.io/en/latest/prettymaps.html#module-prettymaps)
 
-## Google Colaboratory Demo
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/marceloprates/prettymaps/blob/master/notebooks/examples.ipynb)
+## [prettymaps subreddit](https://www.reddit.com/r/prettymaps_/)
+## [Google Colaboratory Demo](https://colab.research.google.com/github/marceloprates/prettymaps/blob/master/notebooks/examples.ipynb)
 
 ## Installation
 
