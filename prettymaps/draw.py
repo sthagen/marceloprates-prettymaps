@@ -20,7 +20,7 @@ import re
 import os
 import json
 import yaml
-import IPython
+#import IPython
 import pathlib
 import warnings
 import matplotlib
@@ -37,8 +37,8 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import hex2color
 from matplotlib.patches import Path, PathPatch
 from typing import Optional, Union, Tuple, List, Dict, Any, Iterable
-from shapely.geometry import Point, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection, box
 from shapely.geometry.base import BaseGeometry
+from shapely.geometry import Point, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection, box
 
 #import vsketch
 
@@ -78,6 +78,7 @@ class Preset:
     """
     params: dict
 
+    '''
     def _ipython_display_(self):
         """
         Implements the _ipython_display_() function for the Preset class.
@@ -104,7 +105,7 @@ class Preset:
         params.iloc[1:, 2:] = ''
 
         IPython.display.display(IPython.display.Markdown(params.to_markdown()))
-
+    '''
 
 def transform_gdfs(
     gdfs: Dict[str, gp.GeoDataFrame],
