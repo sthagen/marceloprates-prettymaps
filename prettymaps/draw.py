@@ -888,14 +888,17 @@ def override_preset(
 # =============================================================================
 
 
-def draw_text(params: Dict[str, dict], background: BaseGeometry) -> None:
+def draw_text(
+    ax: matplotlib.axes.Axes, params: Dict[str, Any], background: BaseGeometry
+) -> None:
     """
     Draw text with content and matplotlib style parameters specified by 'params' dictionary.
-    params['text'] should contain the message to be drawn
+    params['text'] should contain the message to be drawn.
 
     Args:
-        params (Dict[str, dict]): matplotlib style parameters for drawing text. params['text'] should contain the message to be drawn.
-        background (BaseGeometry): Background layer
+        ax (matplotlib.axes.Axes): Matplotlib axis object.
+        params (Dict[str, Any]): Matplotlib style parameters for drawing text. params['text'] should contain the message to be drawn.
+        background (BaseGeometry): Background layer.
     """
     # Override default osm_credit dict with provided parameters
     params = override_params(
@@ -923,19 +926,31 @@ def draw_text(params: Dict[str, dict], background: BaseGeometry) -> None:
     x = np.interp([x], [0, 1], [xmin, xmax])[0]
     y = np.interp([y], [0, 1], [ymin, ymax])[0]
 
-    plt.text(x, y, text, **params)
+    ax.text(x, y, text, zorder=1000, **params)
 
 
 @log_execution_time
 def draw_credit(
-    background,
-    credit,
-    mode,
-    multiplot,
-    logging=False,
-):
+    ax: matplotlib.axes.Axes,
+    background: BaseGeometry,
+    credit: Dict[str, Any],
+    mode: str,
+    multiplot: bool,
+    logging: bool = False,
+) -> None:
+    """
+    Draws credit text on the plot.
+
+    Args:
+        ax (matplotlib.axes.Axes): Matplotlib axis object.
+        background (BaseGeometry): Background layer.
+        credit (Dict[str, Any]): Dictionary containing credit text and style parameters.
+        mode (str): Drawing mode. Options: 'matplotlib', 'plotter'.
+        multiplot (bool): Whether the plot is part of a multiplot.
+        logging (bool, optional): Whether to enable logging. Defaults to False.
+    """
     if (mode == "matplotlib") and (credit != False) and (not multiplot):
-        draw_text(credit, background)
+        draw_text(ax, credit, background)
 
 
 # =============================================================================
@@ -1186,7 +1201,7 @@ def plot(
     draw_background(background, ax, style, mode, logging=logging)
 
     # 10. Draw credit message
-    draw_credit(background, credit, mode, multiplot, logging=logging)
+    draw_credit(ax, background, credit, mode, multiplot, logging=logging)
 
     # 11. Draw hillshade
     draw_hillshade(
