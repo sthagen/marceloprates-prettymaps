@@ -2,8 +2,13 @@
 
 A minimal Python library to draw customized maps from [OpenStreetMap](https://www.openstreetmap.org/#map=12/11.0733/106.3078) created using the [osmnx](https://github.com/gboeing/osmnx), [matplotlib](https://matplotlib.org/), [shapely](https://shapely.readthedocs.io/en/stable/index.html) and [vsketch](https://github.com/abey79/vsketch) packages.
 
-![](https://github.com/marceloprates/prettymaps/raw/main/prints/heerhugowaard.png)
+# Prettymaps is now available as a streamlit app!
 
+[![Streamlit App](https://img.shields.io/badge/Streamlit-Online-red?logo=streamlit)]([https://your-streamlit-app-url](https://prettymaps.streamlit.app/))
+
+![image](https://github.com/user-attachments/assets/14e56496-9eab-4b31-ad05-6227d56cfbd2)
+
+<!--![](https://github.com/marceloprates/prettymaps/raw/main/prints/heerhugowaard.png)-->
 
 This work is [licensed](LICENSE) under a GNU Affero General Public License v3.0 (you can make commercial use, distribute and modify this project, but must **disclose** the source code with the license and copyright notice)
 
