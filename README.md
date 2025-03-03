@@ -45,7 +45,7 @@ Then **restart the runtime** (Runtime -> Restart Runtime) before importing prett
 
 After prettymaps is installed, you can run the front-end (streamlit) application from the prettymaps repository using:
 ```
-streamlit run prettymaps/app.py
+streamlit run app.py
 ```
 
 # Tutorial
