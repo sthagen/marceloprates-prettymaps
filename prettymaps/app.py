@@ -1,8 +1,13 @@
 import streamlit as st
-import prettymaps
 import logging
 from matplotlib import pyplot as plt
 import subprocess
+
+try:
+    import prettymaps
+except:
+    subprocess.run(["pip", "install", "prettymaps"])
+    import prettymaps
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
