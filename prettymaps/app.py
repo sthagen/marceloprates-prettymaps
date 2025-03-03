@@ -1,8 +1,9 @@
 import streamlit as st
 import logging
 from matplotlib import pyplot as plt
-import subprocess
+
 import prettymaps
+
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
