@@ -87,7 +87,7 @@ with cols[0]:
     st.subheader("Select Layers")
 
     layers = {
-        "hillshade": st.checkbox("Hillshade", value="hillshade" in style),
+        # "hillshade": st.checkbox("Hillshade", value="hillshade" in style),
         "buildings": st.checkbox("Buildings", value="buildings" in style),
         "streets": st.checkbox("Streets", value="streets" in style),
         "waterway": st.checkbox("Waterway", value="waterway" in style),
@@ -102,7 +102,7 @@ with cols[0]:
     }
 
     # Hillshade parameters
-    if layers["hillshade"]:
+    if False:  # layers["hillshade"]:
         st.subheader("Hillshade Parameters")
         azdeg = st.number_input(
             "Azimuth (degrees)", min_value=0, max_value=360, value=315
@@ -138,7 +138,7 @@ with cols[1]:
                 "dy": dy,
                 "alpha": alpha,
             }
-            if layers["hillshade"]
+            if False  # layers["hillshade"]
             else {}
         )
         with st.spinner("Generating map..."):
