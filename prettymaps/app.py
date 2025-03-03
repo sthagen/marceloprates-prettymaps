@@ -2,13 +2,13 @@ import streamlit as st
 import logging
 from matplotlib import pyplot as plt
 import subprocess
-import prettymaps
+from draw import plot, presets
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-presets = prettymaps.presets().to_dict()
+presets = presets().to_dict()
 
 # Set the title of the app
 st.title("prettymaps")
