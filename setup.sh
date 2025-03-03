@@ -1,5 +1,8 @@
 #! /bin/bash
 
+# Change permissions for STRM folder
+chmod -R 755 ./SRTM1
+
 # Update package list
 apt-get update
 
