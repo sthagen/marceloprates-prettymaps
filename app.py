@@ -1,9 +1,20 @@
 import streamlit as st
 import logging
 from matplotlib import pyplot as plt
+import sys
+import os
+import io
 
+# Set Streamlit to use the wide layout
+st.set_page_config(layout="wide")
+
+# Add repo root to sys.path
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 import prettymaps
 
+# Initialize session state for last_image
+if "last_image" not in st.session_state:
+    st.session_state.last_image = None
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -19,16 +30,29 @@ with cols[0]:
     query = st.text_area(
         "Location", value="Stad van de Zon, Heerhugowaard, Netherlands", height=86
     )
-    radius = st.slider("Radius (km)", 0.5, 10.0, 0.1, step=0.5)
+    radius = st.slider("Radius (km)", 0.5, 10.0, 0.75, step=0.5)
     circular = st.checkbox("Circular map", value=False)
 
+    # Preset selector
+    preset_options = list(presets["preset"].values())
+    selected_preset = st.selectbox(
+        "Select a Preset", preset_options, index=preset_options.index("default")
+    )
+
     # Add input for number of colors
-    num_colors = st.number_input("Number of colors", min_value=1, value=2, step=1)
+    style = prettymaps.preset(selected_preset).params["style"]
+    palette = (
+        style["building"]["palette"]
+        if "building" in style and "palette" in style["building"]
+        else ["#433633", "#FF5E5B"]
+    )
+    num_colors = st.number_input(
+        "Number of colors", min_value=1, value=len(palette), step=1
+    )
 
     custom_palette = {}
-    color_cols = st.columns(4)
-    palette = ["#433633", "#FF5E5B"]
-    for i in range((num_colors + 3) // 4):  # Calculate the number of rows needed
+    color_cols = st.columns(len(palette))
+    for i in range(len(palette) // 1):  # Calculate the number of rows needed
         for j, col in enumerate(color_cols):
             idx = i * 4 + j
             if idx < num_colors:
@@ -38,15 +62,13 @@ with cols[0]:
                 custom_palette[idx] = color
 
     # Add page size options
-    page_size = st.selectbox(
-        "Page Size", ["A4", "A5", "A3", "A2", "A1", "Custom"], index=0
-    )
-
-    # Preset selector
-    preset_options = list(presets["preset"].values())
-    selected_preset = st.selectbox(
-        "Select a Preset", preset_options, index=preset_options.index("default")
-    )
+    page_size_col, dpi_col = st.columns(2)
+    with page_size_col:
+        page_size = st.selectbox(
+            "Page Size", ["A4", "A5", "A3", "A2", "A1", "Custom"], index=0
+        )
+    with dpi_col:
+        dpi = st.number_input("DPI", min_value=72, max_value=600, value=300, step=50)
 
     if page_size == "Custom":
         width = st.number_input("Custom Width (inches)", min_value=1.0, value=8.27)
@@ -65,18 +87,18 @@ with cols[0]:
     st.subheader("Select Layers")
 
     layers = {
-        "hillshade": st.checkbox("Hillshade", value=False),
-        "buildings": st.checkbox("Buildings", value=True),
-        "streets": st.checkbox("Streets", value=True),
-        "waterway": st.checkbox("Waterway", value=True),
-        "building": st.checkbox("Building", value=True),
-        "water": st.checkbox("Water", value=True),
-        "sea": st.checkbox("Sea", value=True),
-        "forest": st.checkbox("Forest", value=True),
-        "green": st.checkbox("Green", value=True),
-        "rock": st.checkbox("Rock", value=True),
-        "beach": st.checkbox("Beach", value=True),
-        "parking": st.checkbox("Parking", value=True),
+        "hillshade": st.checkbox("Hillshade", value="hillshade" in style),
+        "buildings": st.checkbox("Buildings", value="buildings" in style),
+        "streets": st.checkbox("Streets", value="streets" in style),
+        "waterway": st.checkbox("Waterway", value="waterway" in style),
+        "building": st.checkbox("Building", value="building" in style),
+        "water": st.checkbox("Water", value="water" in style),
+        "sea": st.checkbox("Sea", value="sea" in style),
+        "forest": st.checkbox("Forest", value="forest" in style),
+        "green": st.checkbox("Green", value="green" in style),
+        "rock": st.checkbox("Rock", value="rock" in style),
+        "beach": st.checkbox("Beach", value="beach" in style),
+        "parking": st.checkbox("Parking", value="parking" in style),
     }
 
     # Hillshade parameters
@@ -105,7 +127,8 @@ with cols[1]:
         icon=":material/map:",
         use_container_width=True,
     )
-    if button:
+
+    if button:  # or "last_image" in st.session_state:
         hillshade_params = (
             {
                 "azdeg": azdeg,
@@ -118,15 +141,46 @@ with cols[1]:
             if layers["hillshade"]
             else {}
         )
-        prettymaps.plot(
-            query,
-            radius=1000 * radius,
-            circle=circular,
-            layers={k: (False if v == False else {}) for k, v in layers.items()},
-            style={"building": {"palette": list(custom_palette.values())}},
-            figsize=(width, height),
-        )
-        st.pyplot(plt)
+        with st.spinner("Generating map..."):
+            fig, ax = plt.subplots(figsize=(width, height), dpi=300)
+            prettymaps.plot(
+                query,
+                radius=1000 * radius,
+                circle=circular,
+                layers={k: (False if v == False else {}) for k, v in layers.items()},
+                style={"building": {"palette": list(custom_palette.values())}},
+                figsize=(width, height),
+                preset=selected_preset,
+                show=False,
+                ax=ax,
+            )
+            buf = io.BytesIO()
+            plt.savefig(buf, format="png", bbox_inches="tight", dpi=150)
+            buf.seek(0)
+            st.session_state.last_image = buf
+
+            # Save the figure to a file
+            fig_path = "/tmp/generated_map.png"
+            with open(fig_path, "wb") as f:
+                f.write(st.session_state.last_image.getbuffer())
+
+            # Provide a download button
+            with open(fig_path, "rb") as file:
+                btn = st.download_button(
+                    label="Download Map",
+                    data=file,
+                    file_name=f"{query}.png",
+                    mime="image/png",
+                    use_container_width=True,
+                )
+
+            st.image(st.session_state.last_image, use_container_width=True)
+
     else:
-        fig_path = "https://github.com/marceloprates/prettymaps/raw/main/prints/heerhugowaard.png"
-        st.image(fig_path, use_container_width=True)
+        if st.session_state.last_image:
+            st.image(st.session_state.last_image, use_container_width=True)
+        else:
+            st.image(
+                "prints/Stad van de Zon, Heerhugowaard, Netherlands.png",
+                use_container_width=True,
+            )
