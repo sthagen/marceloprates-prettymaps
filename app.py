@@ -181,6 +181,6 @@ with cols[1]:
             st.image(st.session_state.last_image, use_container_width=True)
         else:
             st.image(
-                "prints/Stad van de Zon, Heerhugowaard, Netherlands.png",
+                "https://github.com/marceloprates/prettymaps/blob/main/prints/app_placeholder.png?raw=true",
                 use_container_width=True,
             )
