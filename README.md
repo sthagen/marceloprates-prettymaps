@@ -6,7 +6,7 @@ A minimal Python library to draw customized maps from [OpenStreetMap](https://ww
 
 [![Streamlit App](https://img.shields.io/badge/Streamlit-Live-blue?logo=streamlit)](https://prettymaps.streamlit.app/)
 
-![image](https://github.com/user-attachments/assets/14e56496-9eab-4b31-ad05-6227d56cfbd2)
+[![image](https://github.com/user-attachments/assets/14e56496-9eab-4b31-ad05-6227d56cfbd2)](https://prettymaps.streamlit.app/)
 
 <!--![](https://github.com/marceloprates/prettymaps/raw/main/prints/heerhugowaard.png)-->
 
