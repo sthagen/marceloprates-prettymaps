@@ -4,7 +4,7 @@ A minimal Python library to draw customized maps from [OpenStreetMap](https://ww
 
 # Prettymaps is now available as a streamlit app!
 
-[![Streamlit App](https://img.shields.io/badge/Streamlit-Online-red?logo=streamlit)]([https://your-streamlit-app-url](https://prettymaps.streamlit.app/))
+[![Streamlit App](https://img.shields.io/badge/Streamlit-Live-blue?logo=streamlit)](https://prettymaps.streamlit.app/)
 
 ![image](https://github.com/user-attachments/assets/14e56496-9eab-4b31-ad05-6227d56cfbd2)
 
