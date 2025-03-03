@@ -16,6 +16,13 @@
                 "footway": 1
             }
         },
+        "waterway": {
+            "tags": {"waterway": ["river", "stream"]},
+            "width": {
+                "river": 20,
+                "stream": 10
+            }
+        },
         "building": {
             "tags": {
                 "building": true,
@@ -30,6 +37,7 @@
                 ]
             }
         },
+        "sea": {},
         "forest": {
             "tags": {
                 "landuse": "forest"
@@ -43,11 +51,17 @@
                 ],
                 "natural": [
                     "island",
-                    "wood"
+                    "wood",
+                    "wetland"
                 ],
                 "leisure": "park"
             }
         },
+        "rock": {
+            "tags": {
+                "natural": "bare_rock"
+            }
+        },  
         "beach": {
             "tags": {
                 "natural": "beach"
@@ -91,7 +105,23 @@
             "hatch_c": "#9bc3d4",
             "hatch": "ooo...",
             "lw": 1,
-            "zorder": 3
+            "zorder": 99
+        },
+        "sea": {
+            "fc": "#a8e1e6",
+            "ec": "#2F3737",
+            "hatch_c": "#9bc3d4",
+            "hatch": "ooo...",
+            "lw": 1,
+            "zorder": 99
+        },
+        "waterway": {
+            "fc": "#a8e1e6",
+            "ec": "#2F3737",
+            "hatch_c": "#9bc3d4",
+            "hatch": "ooo...",
+            "lw": 1,
+            "zorder": 200
         },
         "beach": {
             "fc": "#FCE19C",
@@ -122,6 +152,12 @@
             "ec": "#2F3737",
             "lw": 0.5,
             "zorder": 5
+        },
+        "rock": {
+            "fc": "#BDC0BA",
+            "ec": "#2F3737",
+            "lw": 1,
+            "zorder": 6
         }
     },
     "circle": null,

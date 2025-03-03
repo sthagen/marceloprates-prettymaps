@@ -14,11 +14,7 @@
         },
         "building": {
             "tags": {
-                "building": true,
-                "leisure": [
-                    "track",
-                    "pitch"
-                ]
+                "building": true
             }
         },
         "water": {
