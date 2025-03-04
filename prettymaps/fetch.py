@@ -125,9 +125,12 @@ def obtain_elevation(gdf):
 
     # Configure the bounding box for the elevation library
 
-    output_file = os.path.join(os.getcwd(), "elevationa.tif")
+    output_file = os.path.join(os.getcwd(), "elevation.tif")
     elevation.clip(
-        bounds=(min_lon, min_lat, max_lon, max_lat), output=output_file, margin="10%"
+        bounds=(min_lon, min_lat, max_lon, max_lat),
+        output=output_file,
+        margin="10%",
+        cache_dir=".",
     )
 
     # subprocess.run(
