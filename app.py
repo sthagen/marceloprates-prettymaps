@@ -90,7 +90,7 @@ with cols[0]:
 
     layers = {
         # "hillshade": st.checkbox("Hillshade", value="hillshade" in style),
-        "buildings": st.checkbox("Buildings", value="buildings" in style),
+        "building": st.checkbox("Buildings", value="building" in style),
         "streets": st.checkbox("Streets", value="streets" in style),
         "waterway": st.checkbox("Waterway", value="waterway" in style),
         "building": st.checkbox("Building", value="building" in style),
