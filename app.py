@@ -30,7 +30,7 @@ with cols[0]:
     query = st.text_area(
         "Location", value="Stad van de Zon, Heerhugowaard, Netherlands", height=86
     )
-    radius = st.slider("Radius (km)", 0.5, 10.0, 0.75, step=0.5)
+    radius = st.slider("Radius (km)", 0.5, 1.5, 0.75, step=0.25)
     circular = st.checkbox("Circular map", value=False)
 
     # Preset selector
@@ -65,10 +65,11 @@ with cols[0]:
     page_size_col, dpi_col = st.columns(2)
     with page_size_col:
         page_size = st.selectbox(
-            "Page Size", ["A4", "A5", "A3", "A2", "A1", "Custom"], index=0
+            "Page Size", ["A4", "A5", "Square"], index = 0
+            #, "A3", "A2", "A1", "Custom"], index=0
         )
     with dpi_col:
-        dpi = st.number_input("DPI", min_value=72, max_value=600, value=300, step=50)
+        dpi = st.number_input("DPI", min_value=50, max_value=300, value=100, step=50)
 
     if page_size == "Custom":
         width = st.number_input("Custom Width (inches)", min_value=1.0, value=8.27)
@@ -77,6 +78,7 @@ with cols[0]:
         page_sizes = {
             "A4": (8.27, 11.69),
             "A5": (5.83, 8.27),
+            "Square": (8.27, 8.27),
             "A3": (11.69, 16.54),
             "A2": (16.54, 23.39),
             "A1": (23.39, 33.11),
@@ -88,7 +90,7 @@ with cols[0]:
 
     layers = {
         # "hillshade": st.checkbox("Hillshade", value="hillshade" in style),
-        "buildings": st.checkbox("Buildings", value="buildings" in style),
+        "building": st.checkbox("Buildings", value="building" in style),
         "streets": st.checkbox("Streets", value="streets" in style),
         "waterway": st.checkbox("Waterway", value="waterway" in style),
         "building": st.checkbox("Building", value="building" in style),
