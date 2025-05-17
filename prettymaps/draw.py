@@ -16,16 +16,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-import cv2
+# Standard library imports
 import json
 import logging
 import os
+import time
 import pathlib
 import warnings
 from copy import deepcopy
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Union
 
+# Third-party imports
+import cv2
 import geopandas as gp
 import matplotlib
 import numpy as np
@@ -47,8 +50,11 @@ from shapely.geometry import (
     box,
 )
 from shapely.geometry.base import BaseGeometry
+from sklearn.preprocessing import MinMaxScaler
 from thefuzz import fuzz
+import shutil
 
+# Local imports
 from .fetch import get_gdfs, obtain_elevation, get_keypoints
 from .utils import log_execution_time
 
@@ -539,7 +545,6 @@ def draw_hillshade(
         ls = LightSource(azdeg=azdeg, altdeg=altdeg)
         hillshade = ls.hillshade(elevation_data, vert_exag=vert_exag, dx=dx, dy=dy)
         # Convert hillshade to RGBA
-        from sklearn.preprocessing import MinMaxScaler
 
         # hillshade = np.clip(hillshade, 0, np.inf)
         # hillshade = MinMaxScaler((0, 1)).fit_transform(hillshade)
@@ -561,6 +566,15 @@ def draw_hillshade(
         )
         ax.set_xlim(min_x, max_x)
         ax.set_ylim(min_y, max_y)
+
+        # Delete the ./SRTM1 folder after drawing hillshade
+        srtm1_dir = os.path.join(os.getcwd(), "SRTM1")
+        if os.path.isdir(srtm1_dir):
+            try:
+                shutil.rmtree(srtm1_dir)
+            except Exception as e:
+                if logging:
+                    print(f"Warning: Failed to delete {srtm1_dir}: {e}")
 
 
 @log_execution_time
@@ -1178,7 +1192,10 @@ def plot(
     layers = override_args(layers, circle, dilate, logging=logging)
 
     # 4. Fetch geodataframes
+    start_time = time.time()
     gdfs = get_gdfs(query, layers, radius, dilate, -rotation, logging=logging)
+    fetch_time = time.time() - start_time
+    print(f"Fetching geodataframes took {fetch_time:.2f} seconds")
 
     # 5. Apply transformations to GeoDataFrames (translation, scale, rotation)
     gdfs = transform_gdfs(gdfs, x, y, scale_x, scale_y, rotation, logging=logging)

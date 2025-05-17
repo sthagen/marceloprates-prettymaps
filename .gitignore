@@ -1,3 +1,49 @@
+# Byte-compiled / optimized / DLL files
 *.py[cod]
-*.egg-info
-cache
+__pycache__/
+
+# Distribution / packaging
+*.egg-info/
+build/
+dist/
+prettymaps.egg-info/
+
+# Caches and logs
+cache/
+outputs/
+.DS_Store
+*.log
+*.bak
+*.dat
+*.sqlite
+
+# Data
+/data/
+
+# Ignore all notebooks except examples.ipynb
+notebooks/*
+!notebooks/examples.ipynb
+
+# Exclude etc folder
+etc/
+
+# Documentation images and archives
+/docs/images/
+/docs/archive/
+
+# Scripts (if you want to ignore generated or temp files in scripts)
+/scripts/*.pyc
+/scripts/__pycache__/
+
+# Ignore SRTM1 data
+SRTM1/
+
+# Ignore OS and editor files
+*.swp
+*~
+.vscode/
+.devcontainer/
+
+# Ignore test and temp files
+*.tmp
+*.tmp.png

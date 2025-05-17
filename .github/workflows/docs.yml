@@ -1,0 +1,42 @@
+# Deploy Docs to GitHub Pages using MkDocs
+# This workflow builds documentation from the 'docs/' folder using mkdocs.yml in the repo root
+# and deploys the static site to GitHub Pages.
+
+name: Build and Deploy Docs
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      # Ensure mkdocs.yml exists in the repo root
+      - name: Check for mkdocs.yml in root
+        run: |
+          if [ ! -f mkdocs.yml ]; then
+            echo "Error: mkdocs.yml not found in repository root. Please add it." && exit 1
+          fi
+      - name: Install dependencies
+        run: |
+          pip install -r docs/requirements.txt
+      - name: Build docs with MkDocs
+        run: |
+          mkdocs build
+      - name: List files after build
+        run: |
+          pwd
+          ls -l
+          ls -l site || true
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site 

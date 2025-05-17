@@ -1,18 +1,43 @@
-#! /bin/bash
+#!/bin/bash
 
-# Change permissions for STRM folder
-chmod -R 755 ./SRTM1
+set -e
 
-# Update package list
-apt-get update
+# Detect OS
+OS="$(uname)"
+echo "Detected OS: $OS"
 
-# Install essential build tools including make and gcc
-apt-get install -y build-essential make gcc
+# Change permissions for SRTM1 folder (Linux/macOS only)
+if [ -d "./SRTM1" ]; then
+  chmod -R 755 ./SRTM1
+fi
 
-# Optionally install other dependencies (e.g., for elevation or other libraries)
-apt-get install -y python3-dev libgdal-dev
+if [[ "$OS" == "Linux" ]]; then
+  # Linux (Debian/Ubuntu)
+  echo "Updating package list and installing dependencies for Linux..."
+  sudo apt-get update
+  sudo apt-get install -y build-essential make gcc libgdal-dev gdal-bin
+  sudo apt-get clean
 
-# Clean up to reduce the image size
-apt-get clean
+elif [[ "$OS" == "Darwin" ]]; then
+  # macOS
+  echo "Installing dependencies for macOS (requires Homebrew)..."
+  if ! command -v brew &>/dev/null; then
+    echo "Homebrew not found. Please install Homebrew first: https://brew.sh/"
+    exit 1
+  fi
+  brew update
+  brew install gdal make gcc
 
-pip install git+https://github.com/marceloprates/prettymaps.git
+elif [[ "$OS" =~ "MINGW" || "$OS" =~ "MSYS" || "$OS" =~ "CYGWIN" ]]; then
+  # Windows (Git Bash, MSYS, Cygwin)
+  echo "Windows detected. Please install the following manually:"
+  echo "- GDAL (https://gdal.org/download.html or via Conda: conda install -c conda-forge gdal)"
+  echo "- Make and GCC (optional, for advanced features)"
+  echo "- Python 3 and pip"
+  exit 0
+else
+  echo "Unsupported OS: $OS"
+  exit 1
+fi
+
+echo "Setup complete!"
