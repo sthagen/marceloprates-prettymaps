@@ -5,6 +5,16 @@ import sys
 import os
 import io
 
+
+def download_svg():
+    """
+    Creates additional map in SVG format
+    """
+    fig_path = "/tmp/generated_map_download.svg"
+    plt.savefig(fig_path, format="svg", bbox_inches="tight", dpi=150)
+    return fig_path
+
+
 # Set Streamlit to use the wide layout
 st.set_page_config(layout="wide")
 
@@ -65,8 +75,10 @@ with cols[0]:
     page_size_col, dpi_col = st.columns(2)
     with page_size_col:
         page_size = st.selectbox(
-            "Page Size", ["A4", "A5", "Square"], index = 0
-            #, "A3", "A2", "A1", "Custom"], index=0
+            "Page Size",
+            ["A4", "A5", "Square"],
+            index=0,
+            # , "A3", "A2", "A1", "Custom"], index=0
         )
     with dpi_col:
         dpi = st.number_input("DPI", min_value=50, max_value=300, value=100, step=50)
@@ -130,7 +142,7 @@ with cols[1]:
         use_container_width=True,
     )
 
-    if button:  # or "last_image" in st.session_state:
+    if button:
         hillshade_params = (
             {
                 "azdeg": azdeg,
@@ -166,23 +178,43 @@ with cols[1]:
             with open(fig_path, "wb") as f:
                 f.write(st.session_state.last_image.getbuffer())
 
-            # Provide a download button
-            with open(fig_path, "rb") as file:
-                btn = st.download_button(
-                    label="Download Map",
-                    data=file,
-                    file_name=f"{query}.png",
-                    mime="image/png",
-                    use_container_width=True,
-                )
+            # Save SVG for persistent download
+            svg_path = download_svg()
+            st.session_state.last_png_path = fig_path
+            st.session_state.last_svg_path = svg_path
 
-            st.image(st.session_state.last_image, use_container_width=True)
+    # Always show download buttons (disabled if no image)
+    png_ready = "last_png_path" in st.session_state and os.path.exists(
+        st.session_state["last_png_path"]
+    )
+    svg_ready = "last_svg_path" in st.session_state and os.path.exists(
+        st.session_state["last_svg_path"]
+    )
+    btn_cols = st.columns(2)
+    with btn_cols[0]:
+        st.download_button(
+            label="Download PNG",
+            data=open(st.session_state["last_png_path"], "rb") if png_ready else b"",
+            file_name=f"{query}.png",
+            mime="image/png",
+            use_container_width=True,
+            disabled=not png_ready,
+        )
+    with btn_cols[1]:
+        st.download_button(
+            label="Download SVG",
+            data=open(st.session_state["last_svg_path"], "rb") if svg_ready else b"",
+            file_name=f"{query}.svg",
+            mime="image/svg",
+            use_container_width=True,
+            disabled=not svg_ready,
+        )
 
+    # Always show image (generated or placeholder)
+    if st.session_state.get("last_image"):
+        st.image(st.session_state.last_image, use_container_width=True)
     else:
-        if st.session_state.last_image:
-            st.image(st.session_state.last_image, use_container_width=True)
-        else:
-            st.image(
-                "https://github.com/marceloprates/prettymaps/blob/main/prints/app_placeholder.png?raw=true",
-                use_container_width=True,
-            )
+        st.image(
+            "https://github.com/marceloprates/prettymaps/blob/main/pictures/app_placeholder.png?raw=true",
+            use_container_width=True,
+        )
