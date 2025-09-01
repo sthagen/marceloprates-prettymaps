@@ -95,7 +95,7 @@ def get_keypoints(
     Returns:
     geopandas.GeoDataFrame: A GeoDataFrame containing the keypoints that match the specified tags within the given perimeter.
     """
-    keypoints_df = ox.features_from_polygon(perimeter, tags=tags)
+    keypoints_df = ox.features.features_from_polygon(perimeter, tags=tags)
 
     return keypoints_df
 
@@ -150,7 +150,7 @@ def obtain_elevation(gdf):
 
     raster = rxr.open_rasterio(output_file).squeeze()
 
-    raster = raster.rio.reproject(CRS.from_string(ox.project_gdf(gdf).crs.to_string()))
+    raster = raster.rio.reproject(CRS.from_string(ox.projection.project_gdf(gdf).crs.to_string()))
 
     # convert to numpy array
     elevation_data = raster.data
@@ -200,9 +200,9 @@ def parse_query(query):
 def get_boundary(query, radius, circle=False, rotation=0):
 
     # Get point from query
-    point = query if parse_query(query) == "coordinates" else ox.geocode(query)
+    point = query if parse_query(query) == "coordinates" else ox.geocoder.geocode(query)
     # Create GeoDataFrame from point
-    boundary = ox.project_gdf(
+    boundary = ox.projection.project_gdf(
         GeoDataFrame(geometry=[Point(point[::-1])], crs="EPSG:4326")
     )
 
@@ -252,19 +252,19 @@ def get_perimeter(
             perimeter = query
         else:
             # Fetch perimeter from OSM
-            perimeter = ox.geocode_to_gdf(
+            perimeter = ox.geocoder.geocode_to_gdf(
                 query,
                 by_osmid=by_osmid,
                 **kwargs,
             )
 
     # Scale according to aspect ratio
-    perimeter = ox.project_gdf(perimeter)
+    perimeter = ox.projection.project_gdf(perimeter)
     perimeter.loc[0, "geometry"] = scale(perimeter.loc[0, "geometry"], aspect_ratio, 1)
     perimeter = perimeter.to_crs(4326)
 
     # Apply dilation
-    perimeter = ox.project_gdf(perimeter)
+    perimeter = ox.projection.project_gdf(perimeter)
     if dilate is not None:
         perimeter.geometry = perimeter.geometry.buffer(dilate)
     perimeter = perimeter.to_crs(4326)
@@ -404,7 +404,7 @@ def get_gdf(
 
     # Apply tolerance to the perimeter
     perimeter_with_tolerance = (
-        ox.project_gdf(perimeter).buffer(perimeter_tolerance).to_crs(4326)
+        ox.projection.project_gdf(perimeter).buffer(perimeter_tolerance).to_crs(4326)
     )
     perimeter_with_tolerance = unary_union(perimeter_with_tolerance.geometry).buffer(0)
 
@@ -423,7 +423,7 @@ def get_gdf(
         elif layer == "sea":
             # Fetch geometries from OSM
             coastline = unary_union(
-                ox.features_from_polygon(
+                ox.features.features_from_polygon(
                     bbox, tags={"natural": "coastline"}
                 ).geometry.tolist()
             )
@@ -461,11 +461,11 @@ def get_gdf(
         else:
             if osmid is None:
                 # Fetch geometries from OSM
-                gdf = ox.features_from_polygon(
+                gdf = ox.features.features_from_polygon(
                     bbox, tags={tags: True} if type(tags) == str else tags
                 )
             else:
-                gdf = ox.geocode_to_gdf(osmid, by_osmid=True)
+                gdf = ox.geocoder.geocode_to_gdf(osmid, by_osmid=True)
     except Exception as e:
         # print(f"Error fetching {layer}: {e}")
         gdf = GeoDataFrame(geometry=[])
@@ -584,7 +584,7 @@ def unified_osm_request(
     dict: Dictionary of GeoDataFrames for each layer.
     """
     # Apply tolerance to the perimeter
-    perimeter_with_tolerance = ox.project_gdf(perimeter).buffer(0).to_crs(4326)
+    perimeter_with_tolerance = ox.projection.project_gdf(perimeter).buffer(0).to_crs(4326)
     perimeter_with_tolerance = unary_union(perimeter_with_tolerance.geometry).buffer(0)
 
     # Fetch from perimeter's bounding box, to avoid missing some geometries
@@ -605,7 +605,7 @@ def unified_osm_request(
 
     # Fetch all features in one request
     try:
-        all_features = ox.features_from_polygon(bbox, tags=combined_tags)
+        all_features = ox.features.features_from_polygon(bbox, tags=combined_tags)
     except Exception as e:
         all_features = GeoDataFrame(geometry=[])
 
@@ -624,7 +624,7 @@ def unified_osm_request(
             elif layer == "sea":
                 try:
                     coastline = unary_union(
-                        ox.features_from_polygon(
+                        ox.features.features_from_polygon(
                             bbox, tags={"natural": "coastline"}
                         ).geometry.tolist()
                     )
@@ -682,7 +682,7 @@ def unified_osm_request(
                                 ]
                             gdf = pd.concat([gdf, filtered_features], axis=0)
                 else:
-                    gdf = ox.geocode_to_gdf(kwargs.get("osmid"), by_osmid=True)
+                    gdf = ox.geocoder.geocode_to_gdf(kwargs.get("osmid"), by_osmid=True)
 
             gdf = gdf.copy()
             gdf.geometry = gdf.geometry.intersection(perimeter_with_tolerance)

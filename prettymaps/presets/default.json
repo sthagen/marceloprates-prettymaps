@@ -54,7 +54,16 @@
                     "wood",
                     "wetland"
                 ],
-                "leisure": "park"
+                "leisure": [
+                    "dog_park",
+                    "disc_golf_course",
+                    "garden",
+                    "golf_course",
+                    "park",
+                    "pitch",
+                    "sports_centre",
+                    "track"
+                ]
             }
         },
         "rock": {

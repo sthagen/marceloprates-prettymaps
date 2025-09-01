@@ -17,7 +17,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       # Ensure mkdocs.yml exists in the repo root
       - name: Check for mkdocs.yml in root
         run: |

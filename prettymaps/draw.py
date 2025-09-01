@@ -277,7 +277,7 @@ def gdf_to_shapely(
 
     # Project gdf if applicable
     if not gdf.empty and gdf.crs is not None:
-        gdf = ox.project_gdf(gdf)
+        gdf = ox.projection.project_gdf(gdf)
 
     if layer in ["streets", "railway", "waterway"]:
         geometries = graph_to_shapely(gdf, width)
@@ -426,7 +426,7 @@ def plot_legends(
     texts = []
     for i in range(len(keypoints_df)):
         x, y = np.concatenate(
-            ox.project_gdf(keypoints_df.iloc[[i]]).geometry.iloc[0].centroid.xy
+            ox.projection.project_gdf(keypoints_df.iloc[[i]]).geometry.iloc[0].centroid.xy
         )
         name = keypoints_df.name.iloc[i]
         kwargs = keypoints_df.kwargs.iloc[i]
@@ -554,7 +554,7 @@ def draw_hillshade(
 
         min_x, max_x = ax.get_xlim()
         min_y, max_y = ax.get_ylim()
-        min_lon, min_lat, max_lon, max_lat = ox.project_gdf(
+        min_lon, min_lat, max_lon, max_lat = ox.projection.project_gdf(
             gdfs["perimeter"]
         ).total_bounds
         ax.imshow(
@@ -601,7 +601,7 @@ def create_background(
 
     background = shapely.affinity.scale(
         box(
-            *shapely.ops.unary_union(ox.project_gdf(gdfs["perimeter"]).geometry).bounds
+            *shapely.ops.unary_union(ox.projection.project_gdf(gdfs["perimeter"]).geometry).bounds
         ),
         background_pad,
         background_pad,
@@ -670,7 +670,7 @@ def transform_gdfs(
     """
     # Project geometries
     gdfs = {
-        name: ox.project_gdf(gdf) if len(gdf) > 0 else gdf for name, gdf in gdfs.items()
+        name: ox.projection.project_gdf(gdf) if len(gdf) > 0 else gdf for name, gdf in gdfs.items()
     }
     # Create geometry collection from gdfs' geometries
     collection = GeometryCollection(
@@ -685,7 +685,7 @@ def transform_gdfs(
         gdfs[layer].geometry = list(collection.geoms[i].geoms)
         # Reproject
         if len(gdfs[layer]) > 0:
-            gdfs[layer] = ox.project_gdf(gdfs[layer], to_crs="EPSG:4326")
+            gdfs[layer] = ox.projection.project_gdf(gdfs[layer], to_crs="EPSG:4326")
 
     return gdfs
 

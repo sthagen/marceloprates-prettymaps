@@ -47,3 +47,4 @@ SRTM1/
 # Ignore test and temp files
 *.tmp
 *.tmp.png
+prettymaps/presets/my-preset.json
