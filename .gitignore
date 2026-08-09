@@ -20,9 +20,10 @@ outputs/
 # Data
 /data/
 
-# Ignore all notebooks except examples.ipynb
+# Ignore all notebooks except the tutorial
 notebooks/*
-!notebooks/examples.ipynb
+!notebooks/tutorial.py
+!notebooks/tutorial.md
 
 # Exclude etc folder
 etc/
@@ -31,10 +32,6 @@ etc/
 /docs/images/
 /docs/archive/
 
-# Scripts (if you want to ignore generated or temp files in scripts)
-/scripts/*.pyc
-/scripts/__pycache__/
-
 # Ignore SRTM1 data
 SRTM1/
 
@@ -42,9 +39,20 @@ SRTM1/
 *.swp
 *~
 .vscode/
-.devcontainer/
 
 # Ignore test and temp files
 *.tmp
 *.tmp.png
 prettymaps/presets/my-preset.json
+prettymaps/presets/pytest-temp-preset.json
+
+# Local-only agent guardrails (not committed)
+AGENTS.md
+.venv/
+# Marimo caches
+__marimo__/
+*.marimo
+
+# Lesson agent guardrails
+.ralph/
+.pi/
